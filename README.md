@@ -10,6 +10,12 @@ BadBuilder is a tool for creating BadUpdate/ABadAvatar USB drives for the Xbox 3
 > [!NOTE]  
 > Windows and Linux can format the selected disk automatically. On Linux, BadBuilder lists removable/USB disks, unmounts their mounted partitions, formats the selected disk, and mounts the new FAT32 partition under `/mnt`. After copying files, it flushes and unmounts the drive before reporting success. Run it as root. macOS disk handling is not implemented yet.
 
+### XeUnshackle Max
+- Uses [XeUnshackle Max](https://github.com/klofi/XeUnshackle-Max), an independent beta fork of XeUnshackle.
+- Configures immediate auto-start with the built-in video and key display skipped, then launches Aurora through DashLaunch. The exploit still must be triggered; this does not change the console's NAND boot animation.
+- Aurora is selected as the default launch app. Use the Homebrew menu to change or clear that target.
+- Remove `BadUpdatePayload/XeUnshackleConfig.txt` on the USB to restore XeUnshackle Max's default startup screen.
+
 ### Automatic File Downloading
 - Detects and downloads the latest required files automatically.
 - Recognizes previously downloaded files and reuses them by default unless new versions are released.

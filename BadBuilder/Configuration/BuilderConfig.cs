@@ -4,7 +4,11 @@ namespace BadBuilder.Configuration;
 
 internal sealed class BuilderConfig
 {
-    internal BuilderConfig(IEnumerable<HomebrewEntry> builtInHomebrew) =>Homebrew.AddRange(builtInHomebrew);
+    internal BuilderConfig(IEnumerable<HomebrewEntry> builtInHomebrew)
+    {
+        Homebrew.AddRange(builtInHomebrew);
+        LaunchHomebrew = Homebrew.FirstOrDefault(homebrew => homebrew.Artifact.ID == "homebrew-aurora");
+    }
 
     internal string? MountPoint   { get; set; }
     internal DiskInfo? TargetDisk { get; set; }

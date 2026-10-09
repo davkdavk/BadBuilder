@@ -41,11 +41,14 @@ internal static class ArtifactCatalog
         [BootstrapOption.XeUnshackle] = new
         (
             "bootstrap-xeunshackle",
-            "XeUnshackle",
-            "Full payload with Dashlaunch, plugin support, and higher game compatibility",
+            "XeUnshackle Max",
+            "XeUnshackle Max with automatic launch and the startup video/key screen skipped",
             "bootstrap",
-            new GitHubReleaseSource("Byrom90", "XeUnshackle"),
-            [ new InstallOperation(InstallOperationKind.CopyDirectory, ".", "<SUBFOLDER>\\.") ],
+            new GitHubReleaseSource("klofi", "XeUnshackle-Max", "v1.0.0", "XeUnshackle-Max-v1.0.0.zip"),
+            [
+                new InstallOperation(InstallOperationKind.CopyDirectory, ".", "<SUBFOLDER>\\."),
+                new InstallOperation(InstallOperationKind.WriteFile, "BadUpdatePayload/XeUnshackleConfig.txt", Contents: "AutoStartDelay=0\nPlayVideo=0\nShowKeys=0\n")
+            ],
             ArtifactPriority.Bootstrap
         ),
         [BootstrapOption.FreeMyXe] = new
