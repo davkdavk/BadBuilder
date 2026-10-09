@@ -14,6 +14,7 @@ BadBuilder is a tool for creating BadUpdate/ABadAvatar USB drives for the Xbox 3
 - Uses [XeUnshackle Max](https://github.com/klofi/XeUnshackle-Max), an independent beta fork of XeUnshackle.
 - Configures auto-start after a 2-second delay with the built-in video and key display skipped, then launches Aurora through DashLaunch. The exploit still must be triggered; this does not change the console's NAND boot animation.
 - Aurora is selected as the default launch app. Use the Homebrew menu to change or clear that target.
+- Installs XBDM as DashLaunch plugin 1 and JRPC2 as plugin 3. Plugin 2 is left empty; Proto is not bundled.
 - Remove `BadUpdatePayload/XeUnshackleConfig.txt` on the USB to restore XeUnshackle Max's default startup screen.
 
 ### Automatic File Downloading

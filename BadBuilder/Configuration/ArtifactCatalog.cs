@@ -67,6 +67,17 @@ internal static class ArtifactCatalog
         ),
     };
 
+    private static readonly ArtifactDefinition XbdmPlugin = new
+    (
+        "bootstrap-xbdm",
+        "XBDM",
+        "Xbox Debug Monitor plugin for remote debugging.",
+        "plugins",
+        new GitHubReleaseSource("Byrom90", "XeUnshackle", "v1.03", "XeUnshackle-BETA-v1_03.zip"),
+        [new InstallOperation(InstallOperationKind.CopyFile, "Xbdm.xex", "<SUBFOLDER>/Xbdm.xex")],
+        ArtifactPriority.Bootstrap
+    );
+
     private static readonly List<HomebrewEntry> HomebrewEntries =
     [
         new
@@ -150,6 +161,9 @@ internal static class ArtifactCatalog
         {
             selected.Add(ExploitMap[config.SelectedExploit]);
             selected.Add(BootstrapMap[config.SelectedBootstrap]);
+
+            if (config.SelectedBootstrap == BootstrapOption.XeUnshackle)
+                selected.Add(XbdmPlugin);
 
             if (config.SelectedExploit == ExploitOption.BadUpdate)
                 selected.Add(BadUpdateGameData);
