@@ -2,7 +2,6 @@ using BadBuilder.UI;
 using BadBuilder.Services;
 using BadBuilder.Configuration;
 using BadBuilder.Services.Disks;
-using System.Runtime.InteropServices;
 
 namespace BadBuilder.Application;
 
@@ -78,12 +77,7 @@ internal static partial class BuilderApp
                     throw new InvalidOperationException("The selected default homebrew has no valid entry point.");
             }
 
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                Controls.WriteWarning("Drive formatting is currently only supported on Windows. Please format the drive manually to FAT32 before proceeding.");
-                Controls.Pause("Press enter after you have formatted the drive.");
-            }
-            else
+            if (OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
             {
                 bool format = Controls.Confirm($"Are you sure you would like to format [bold]{Config.TargetDisk.Name}[/]? All data on this drive will be lost.", false, warning: true);
                 Controls.PadLine();
@@ -93,9 +87,19 @@ internal static partial class BuilderApp
                     Controls.WriteInfo("Formatting drive.");
                     Config.MountPoint = DiskService.FormatFAT32(Config.TargetDisk);
                     Controls.WriteSuccess("Drive formatted.");
+                    if (OperatingSystem.IsLinux())
+                        Controls.WriteInfo($"Drive mounted at {Config.MountPoint}.");
                 }
                 else
                     return;
+            }
+            else
+            {
+                Controls.WriteWarning("Automatic drive formatting is not supported on this platform. Format the drive as FAT32 manually.");
+                Controls.Pause("Press enter after formatting and mounting the drive.");
+                Config.MountPoint = Controls.PromptText("Enter the mounted drive path");
+                if (!Directory.Exists(Config.MountPoint))
+                    throw new DirectoryNotFoundException($"Mount point not found: {Config.MountPoint}");
             }
 
             if (Config.MountPoint is null) throw new Exception("Format did not remount the drive, installation cannot continue.");

@@ -8,7 +8,13 @@ namespace BadBuilder.Services.Disks;
 
 internal static partial class DiskService
 {
-    internal static List<DiskInfo> EnumerateDisks() => InvokePlatformAction(EnumerateDisksWindows, null, null); // TODO: Implement for macOS and Linux
+    internal static List<DiskInfo> EnumerateDisks()
+    {
+        if (OperatingSystem.IsWindows()) return EnumerateDisksWindows();
+        if (OperatingSystem.IsLinux()) return EnumerateDisksLinux();
+
+        throw new PlatformNotSupportedException($"DiskService does not support this platform ({Environment.OSVersion.Platform}).");
+    }
 
     internal static string FormatFAT32(DiskInfo disk)
     {
@@ -22,7 +28,23 @@ internal static partial class DiskService
         using FatFileSystem fs = FatFileSystem.FormatPartition(virtualDisk, 0, "BADUPDATE  ");
         stream.Flush();
 
-        return InvokePlatformAction(ReassignWindows, null, null, disk); // TODO: Implement for macOS and Linux
+        return ReassignDisk(disk);
+    }
+
+    private static RawDiskStream OpenRawDiskForWrite(DiskInfo disk)
+    {
+        if (OperatingSystem.IsWindows()) return OpenRawDiskForWriteWindows(disk);
+        if (OperatingSystem.IsLinux()) return OpenRawDiskForWriteLinux(disk);
+
+        throw new PlatformNotSupportedException($"DiskService does not support this platform ({Environment.OSVersion.Platform}).");
+    }
+
+    private static string ReassignDisk(DiskInfo disk)
+    {
+        if (OperatingSystem.IsWindows()) return ReassignWindows(disk);
+        if (OperatingSystem.IsLinux()) return ReassignLinux(disk);
+
+        throw new PlatformNotSupportedException($"DiskService does not support this platform ({Environment.OSVersion.Platform}).");
     }
 
 
@@ -48,25 +70,6 @@ internal static partial class DiskService
     }
 
 
-    private static T InvokePlatformAction<T>(Func<T> windowsAction, Func<T> macosAction, Func<T> linuxAction)
-    {
-        if (OperatingSystem.IsWindows()) return windowsAction();
-        if (OperatingSystem.IsMacOS()) return macosAction();
-        if (OperatingSystem.IsLinux()) return linuxAction();
-
-        throw new PlatformNotSupportedException($"DiskService does not support this platform ({Environment.OSVersion.Platform}).");
-    }
-
-    private static T InvokePlatformAction<TIn, T>(Func<TIn, T> windowsAction, Func<TIn, T> macosAction, Func<TIn, T> linuxAction, TIn input)
-    {
-        if (OperatingSystem.IsWindows()) return windowsAction(input);
-        if (OperatingSystem.IsMacOS()) return macosAction(input);
-        if (OperatingSystem.IsLinux()) return linuxAction(input);
-
-        throw new PlatformNotSupportedException($"DiskService does not support this platform ({Environment.OSVersion.Platform}).");
-    }
-
-
     private sealed class RawDiskStream(Stream inner, long length, Action? onDisposed = null) : Stream
     {
         private readonly Stream _inner       = inner;
@@ -80,7 +83,13 @@ internal static partial class DiskService
         public override long Length   => _length;
         public override long Position { get => _inner.Position; set => _inner.Position = value; }
 
-        public override void Flush()                                     => _inner.Flush();
+        public override void Flush()
+        {
+            if (_inner is FileStream fileStream)
+                fileStream.Flush(flushToDisk: true);
+            else
+                _inner.Flush();
+        }
         public override int Read(byte[] buffer, int offset, int count)   => _inner.Read(buffer, offset, count);
         public override long Seek(long offset, SeekOrigin origin)        => _inner.Seek(offset, origin);
         public override void SetLength(long value) { }

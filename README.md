@@ -2,13 +2,13 @@
 BadBuilder is a tool for creating BadUpdate/ABadAvatar USB drives for the Xbox 360. It automates the process of formatting the USB drive, downloading required files, extracting them, adding homebrew, and downloading dashboard updates if needed.
 
 ## Features
-### USB Formatting (Windows Only)
+### USB Formatting (Windows and Linux)
 - Uses a custom FAT32 formatter that supports large USB drives (≥32GB).
 - Ensures compatibility with the Xbox 360.
 - Much more stable than the formatter in BadBuilder v1.
 
 > [!NOTE]  
-> Currently, the formatting feature is **Windows-only**. If you compile BadBuilder for another OS, it'll prompt you to manually format your target disk.
+> Windows and Linux can format the selected disk automatically. On Linux, BadBuilder lists removable/USB disks, unmounts their mounted partitions, formats the selected disk, and mounts the new FAT32 partition under `/mnt`. Run it as root. macOS disk handling is not implemented yet.
 
 ### Automatic File Downloading
 - Detects and downloads the latest required files automatically.
@@ -41,6 +41,15 @@ BadBuilder is a tool for creating BadUpdate/ABadAvatar USB drives for the Xbox 3
 > Formatting a disk means that all data will be lost. Make sure you have selected the right drive before confirming the format. I am not responsible for any data loss.
 
 3. **Begin install**. When you're satisfied with your configuration, you can navigate to the Install menu option, accept the format prompt, and BadBuilder will prepare your USB drive.
+
+## Building for Linux
+Install the .NET 10 SDK, then publish a self-contained Linux executable:
+
+```sh
+dotnet publish BadBuilder/BadBuilder.csproj -c Release -r linux-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish/linux-x64
+```
+
+The output is `publish/linux-x64/BadBuilder`. The .NET runtime is bundled, so users do not need to install it. Linux disk management requires `lsblk`, `mount`, and `umount` (normally provided by util-linux), and the application must run as root to access raw disks.
 
 ### Offline and Local Archives
 - BadBuilder uses the download cache when a release cannot be reached.
