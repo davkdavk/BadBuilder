@@ -164,6 +164,13 @@ internal static partial class BuilderApp
                 }
             }
 
+            if (OperatingSystem.IsLinux())
+            {
+                Controls.WriteInfo("Flushing and unmounting the USB drive.");
+                DiskService.CompleteInstall(Config.MountPoint!);
+                Config.MountPoint = null;
+            }
+
             Controls.WriteSuccess("Your USB drive is ready for use.");
 
             Controls.Pause("Press enter to exit...");

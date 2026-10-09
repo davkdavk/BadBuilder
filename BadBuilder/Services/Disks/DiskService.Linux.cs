@@ -94,6 +94,12 @@ internal static partial class DiskService
         }
     }
 
+    private static void CompleteInstallLinux(string mountPoint)
+    {
+        RunLinuxCommand("sync", "-f", mountPoint);
+        RunLinuxCommand("umount", "--", mountPoint);
+    }
+
     private static List<LinuxBlockDevice> ReadLinuxDevices(string? devicePath = null)
     {
         List<string> arguments = ["--json", "--bytes", "--paths", "--output", "NAME,PATH,SIZE,TYPE,TRAN,RM,MODEL,MOUNTPOINTS"];

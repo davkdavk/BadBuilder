@@ -31,6 +31,12 @@ internal static partial class DiskService
         return ReassignDisk(disk);
     }
 
+    internal static void CompleteInstall(string mountPoint)
+    {
+        if (OperatingSystem.IsLinux())
+            CompleteInstallLinux(mountPoint);
+    }
+
     private static RawDiskStream OpenRawDiskForWrite(DiskInfo disk)
     {
         if (OperatingSystem.IsWindows()) return OpenRawDiskForWriteWindows(disk);

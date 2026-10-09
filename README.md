@@ -8,7 +8,7 @@ BadBuilder is a tool for creating BadUpdate/ABadAvatar USB drives for the Xbox 3
 - Much more stable than the formatter in BadBuilder v1.
 
 > [!NOTE]  
-> Windows and Linux can format the selected disk automatically. On Linux, BadBuilder lists removable/USB disks, unmounts their mounted partitions, formats the selected disk, and mounts the new FAT32 partition under `/mnt`. Run it as root. macOS disk handling is not implemented yet.
+> Windows and Linux can format the selected disk automatically. On Linux, BadBuilder lists removable/USB disks, unmounts their mounted partitions, formats the selected disk, and mounts the new FAT32 partition under `/mnt`. After copying files, it flushes and unmounts the drive before reporting success. Run it as root. macOS disk handling is not implemented yet.
 
 ### Automatic File Downloading
 - Detects and downloads the latest required files automatically.
