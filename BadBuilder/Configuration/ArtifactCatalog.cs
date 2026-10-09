@@ -47,7 +47,7 @@ internal static class ArtifactCatalog
             new GitHubReleaseSource("klofi", "XeUnshackle-Max", "v1.0.0", "XeUnshackle-Max-v1.0.0.zip"),
             [
                 new InstallOperation(InstallOperationKind.CopyDirectory, ".", "<SUBFOLDER>\\."),
-                new InstallOperation(InstallOperationKind.WriteFile, "BadUpdatePayload/XeUnshackleConfig.txt", Contents: "AutoStartDelay=0\nPlayVideo=0\nShowKeys=0\n")
+                new InstallOperation(InstallOperationKind.WriteFile, "BadUpdatePayload/XeUnshackleConfig.txt", Contents: "AutoStartDelay=2.00\nPlayVideo=0\nShowKeys=0\n")
             ],
             ArtifactPriority.Bootstrap
         ),
